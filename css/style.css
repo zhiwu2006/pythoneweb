@@ -401,6 +401,16 @@ body {
   background: rgba(167, 139, 250, 0.2) !important;
 }
 
+/* --- Turtle Canvas --- */
+.turtle-canvas {
+  display: none;
+  margin: 16px auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  box-shadow: var(--shadow-md);
+}
+
 /* --- Output Styles --- */
 .output-body {
   background: var(--bg-primary);

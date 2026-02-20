@@ -104,6 +104,117 @@ builtins.input = _custom_input
             return window.prompt(prompt || '请输入：');
         };
 
+        // 检测是否使用了 turtle，如果是则初始化 Canvas 并注入 Python shim
+        if (code.includes('import turtle') || code.includes('from turtle')) {
+            if (window._turtleInit) window._turtleInit();
+
+            this.pyodide.runPython(`
+import sys
+import types
+
+# 创建一个虚拟的 turtle 模块
+_turtle_mod = types.ModuleType('turtle')
+
+class _CanvasTurtle:
+    def __init__(self):
+        from js import _turtleInit
+    def forward(self, d):
+        from js import _turtleForward
+        _turtleForward(d)
+    fd = forward
+    def backward(self, d):
+        from js import _turtleBackward
+        _turtleBackward(d)
+    bk = backward
+    def right(self, a):
+        from js import _turtleRight
+        _turtleRight(a)
+    rt = right
+    def left(self, a):
+        from js import _turtleLeft
+        _turtleLeft(a)
+    lt = left
+    def penup(self):
+        from js import _turtlePenUp
+        _turtlePenUp()
+    up = penup
+    pu = penup
+    def pendown(self):
+        from js import _turtlePenDown
+        _turtlePenDown()
+    down = pendown
+    pd = pendown
+    def color(self, *args):
+        from js import _turtleColor
+        if len(args) >= 1:
+            _turtleColor(str(args[0]))
+        if len(args) >= 2:
+            from js import _turtleFillColor
+            _turtleFillColor(str(args[1]))
+    def pencolor(self, c):
+        from js import _turtleColor
+        _turtleColor(str(c))
+    def fillcolor(self, c):
+        from js import _turtleFillColor
+        _turtleFillColor(str(c))
+    def pensize(self, w=None):
+        if w is not None:
+            from js import _turtlePenSize
+            _turtlePenSize(w)
+    width = pensize
+    def goto(self, x, y=None):
+        from js import _turtleGoto
+        if y is None:
+            _turtleGoto(x[0], x[1])
+        else:
+            _turtleGoto(x, y)
+    setpos = goto
+    setposition = goto
+    def setheading(self, a):
+        from js import _turtleSetheading
+        _turtleSetheading(a)
+    seth = setheading
+    def circle(self, radius, extent=360):
+        from js import _turtleCircle
+        _turtleCircle(radius, extent)
+    def begin_fill(self):
+        from js import _turtleBeginFill
+        _turtleBeginFill()
+    def end_fill(self):
+        from js import _turtleEndFill
+        _turtleEndFill()
+    def hideturtle(self):
+        from js import _turtleHide
+        _turtleHide()
+    ht = hideturtle
+    def showturtle(self):
+        from js import _turtleShow
+        _turtleShow()
+    st = showturtle
+    def speed(self, s=None):
+        pass
+    def done(self):
+        pass
+    def shape(self, s=None):
+        pass
+    def bgcolor(self, c=None):
+        pass
+
+def _turtle_Turtle():
+    return _CanvasTurtle()
+
+_turtle_mod.Turtle = _turtle_Turtle
+_turtle_mod.forward = lambda d: _CanvasTurtle().forward(d)
+_turtle_mod.fd = _turtle_mod.forward
+_turtle_mod.done = lambda: None
+_turtle_mod.speed = lambda s=None: None
+_turtle_mod.bgcolor = lambda c=None: None
+_turtle_mod.Screen = lambda: type('Screen', (), {'bgcolor': lambda self, c=None: None, 'title': lambda self, t='': None, 'exitonclick': lambda self: None, 'mainloop': lambda self: None})()
+
+sys.modules['turtle'] = _turtle_mod
+`);
+        }
+
         // 带超时保护的运行
         try {
             const timeout = 10000; // 10 秒超时
