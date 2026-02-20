@@ -104,7 +104,10 @@
           </button>
         </div>
         <div class="panel-body output-body">
-          <canvas id="turtle-canvas" class="turtle-canvas"></canvas>
+          <div id="turtle-wrapper" class="turtle-wrapper" style="display: none;">
+            <canvas id="turtle-canvas" class="turtle-canvas"></canvas>
+            <canvas id="turtle-overlay" class="turtle-overlay"></canvas>
+          </div>
           <div class="output-content" id="output-content">
             <div class="output-placeholder">
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"

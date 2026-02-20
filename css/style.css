@@ -402,13 +402,25 @@ body {
 }
 
 /* --- Turtle Canvas --- */
-.turtle-canvas {
-  display: none;
+.turtle-wrapper {
+  position: relative;
   margin: 16px auto;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
   background: var(--bg-secondary);
   box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.turtle-canvas {
+  display: block;
+}
+
+.turtle-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
 }
 
 /* --- Output Styles --- */

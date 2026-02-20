@@ -129,9 +129,9 @@
 
     // --- 工具函数 ---
     function clearOutput() {
-        // 隐藏 turtle canvas
-        const turtleCanvas = document.getElementById('turtle-canvas');
-        if (turtleCanvas) turtleCanvas.style.display = 'none';
+        // 隐藏 turtle wrapper
+        const turtleWrapper = document.getElementById('turtle-wrapper');
+        if (turtleWrapper) turtleWrapper.style.display = 'none';
 
         outputContent.innerHTML = `
       <div class="output-placeholder">
